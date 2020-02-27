@@ -364,12 +364,38 @@ summary {
 
 <h1 class="title toc-ignore">Homework #4</h1>
 <h4 class="author">McKenna Goffinet; mgoffinet</h4>
-<h4 class="date">2/25/2020</h4>
+<h4 class="date">3/4/2020</h4>
 
 </div>
 
 
-
+<p><strong>1) Get a frequency breakdown of the number of chicks, their average weight and the standard deviation of the weights in each of the diets at the start of the study. Store the resulting data frame in a variable named weight0 and print.</strong></p>
+<pre class="r"><code>weight0 &lt;- ChickWeight %&gt;% group_by(Diet) %&gt;% summarize(num_chicks = n(), avg_weight= mean(weight), sd_weight= sd(weight))
+weight0</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   Diet  num_chicks avg_weight sd_weight
+##   &lt;fct&gt;      &lt;int&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 1            220       103.      56.7
+## 2 2            120       123.      71.6
+## 3 3            120       143.      86.5
+## 4 4            118       135.      68.8</code></pre>
+<p><strong>2) Each chick should have twelve weight measurements. Use the dplyr package to identify how many measurements are there for each chick. Extract a subset of the data for all chicks with complete information, name the data set complete, and print the first 3 rows. (Hint: you might want to use mutate to introduce a helper variable consisting of the number of observations)</strong></p>
+<pre class="r"><code>complete &lt;- ChickWeight %&gt;% group_by(Chick) %&gt;% summarize(count = n()) %&gt;% filter(count == 12)
+complete[1:3,]</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   Chick count
+##   &lt;ord&gt; &lt;int&gt;
+## 1 13       12
+## 2 9        12
+## 3 20       12</code></pre>
+<p><strong>3) In the complete data set introduce a new variable that measures the current weight difference compared to day 0. Name this variable weightgain and print the first 3 rows of the new data frame.</strong></p>
+<p><strong>4) Use {ggplot2} to create side-by-side boxplots of weightgain by Diet for day 21. Change the order of the categories in the Diet variable such that the boxplots are ordered by median weightgain, and the lower limit of the y axis should be 0. Describe the relationship in 2-3 sentences.</strong></p>
+<p><strong>5) Answer each of the following questions using numerical and graphical summary. Also explain what you found: </strong></p>
+<p><strong>(a) Which chick gained the most weight and which gained the least weight? </strong></p>
+<p><strong>(b) What diets were they on?</strong></p>
+<p><strong>6)For the chicks with the least and the most weight at time 0, plot their growth trajectories over time.</strong></p>
+<p><strong>7) Add to the previous plot the average growth trajectory for all chicks (calculated as the mean weight for each chick at each time). How do the trajectories compare?</strong></p>
+<p><strong>8) What else do you find interesting in the dataset? Show your exploratory analysis.</strong></p>
 
 
 
