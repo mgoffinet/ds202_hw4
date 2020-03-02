@@ -17,21 +17,27 @@ weight0 <- ChickWeight %>% group_by(Diet) %>% summarize(num_chicks = n(), avg_we
 weight0
 ```
 
-**2) Each chick should have twelve weight measurements. Use the dplyr package to identify how many measurements are there for each chick. Extract a subset of the data for all chicks with complete information, name the data set complete, and print the first 3 rows. (Hint: you might want to use mutate to introduce a helper variable consisting of the number of observations)**
+**2) Each chick should have twelve weight measurements. Use the dplyr package to identify how many measurements there are for each chick. Extract a subset of the data for all chicks with complete information, name the data set complete, and print the first 3 rows. (Hint: you might want to use mutate to introduce a helper variable consisting of the number of observations)**
 ```{r}
-complete <- ChickWeight %>% group_by(Chick) %>% summarize(count = n()) %>% filter(count == 12)
+complete <- ChickWeight %>% group_by(Chick) %>% mutate(count = n()) %>% filter(count == 12)
 complete[1:3,]
 ```
 
 **3) In the complete data set introduce a new variable that measures the current weight difference compared to day 0. Name this variable weightgain and print the first 3 rows of the new data frame.**
 ```{r}
-
+a <- complete %>% group_by(Chick) %>% filter(Time == 0)
+complete$init_weight <- rep(a$weight, each=12)
+complete <- complete %>% mutate(weightgain = weight - init_weight)
+complete[1:3,]
 ```
 
 **4) Use {ggplot2} to create side-by-side boxplots of weightgain by Diet for day 21. Change the order of the categories in the Diet variable such that the boxplots are ordered by median weightgain, and the lower limit of the y axis should be 0. Describe the relationship in 2-3 sentences.**
 ```{r}
-
+complete$Diet <- factor(complete$Diet, levels(complete$Diet)[c(1,2,4,3)])
+complete %>% filter(Time == 21) %>% ggplot(aes(x= Diet, y= weightgain)) + geom_boxplot() + expand_limits(y=0) + labs(y = 'weight gain (gm)', title = 'Diet vs Weight Gain of Chicks on Day 21')
 ```
+
+Since all of the boxplots overlap, no one diet is categorically better than the others. However, Diet 1 has the lowest median weight gain, followed by Diet 2, Diet 4, and Diet 3, which has the highest median weight gain. As for consistency, Diet 4 has the narrowest range of the diets at roughly 125 grams, followed by Diet 1 (200g), Diet 3 (225g), and Diet 2, which has the widest range at about 250 grams.
 
 **5) Answer each of the following questions using numerical and graphical summary. Also explain what you found: **
 
