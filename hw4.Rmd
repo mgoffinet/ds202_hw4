@@ -39,22 +39,40 @@ complete %>% filter(Time == 21) %>% ggplot(aes(x= Diet, y= weightgain)) + geom_b
 
 Since all of the boxplots overlap, no one diet is categorically better than the others. However, Diet 1 has the lowest median weight gain, followed by Diet 2, Diet 4, and Diet 3, which has the highest median weight gain. As for consistency, Diet 4 has the narrowest range of the diets at roughly 125 grams, followed by Diet 1 (200g), Diet 3 (225g), and Diet 2, which has the widest range at about 250 grams.
 
-**5) Answer each of the following questions using numerical and graphical summary. Also explain what you found: **
-
-**(a) Which chick gained the most weight and which gained the least weight? **
+**5) Answer each of the following questions using numerical and graphical summary. Also explain what you found: (a) Which chick gained the most weight and which gained the least weight? (b) What diets were they on?**
 ```{r}
-
+final <- complete %>% filter(Time == 21)
+max <- max(final$weightgain)
+min <- min(final$weightgain)
+final %>% filter(weightgain == max | weightgain == min)
 ```
 
-**(b) What diets were they on?**
-```{r}
-
+```{r fig.width=10}
+final %>% ggplot(aes(x=Chick, y=weightgain)) + geom_point() + labs(y='weight gain (grams)', title='Chick vs Final Weight Gain')
 ```
 
-**6)For the chicks with the least and the most weight at time 0, plot their growth trajectories over time.**
-```{r}
+Chick 24 gained the least weight (32 grams) and Chick 35 gained the most weight (332 grams). Chick 24 was on Diet 2 and Chick 35 was on Diet 3.
 
+It fits with the previous questions results that the chick with the most weight gain was on diet 3 since diet 3 had the greatest median weight gain. While diet 2 didn't have the lowest median weight gain, it had the greatest range of weight gains. In the above scatter plot the chicks are grouped based on diet, so the chicks on diet 1 are on the far left of the graph, followed by diets 2, 3, and 4. It shows that Chick 24 does contribute to the wide range of diet 2 as it's a bit of an outlier among chicks on diet 2.
+
+**6) For the chicks with the least and the most weight at time 0, plot their growth trajectories over time.**
+```{r}
+min <- min(complete$init_weight)
+max <- max(complete$init_weight)
+complete %>% filter(Time == 0 & (init_weight==min | init_weight == max))
 ```
+
+From this we see that Chicks 3, 11, 19, and 23 weighed the most (43 grams) at time 0, and Chicks 27, 28, 29, 33, 36, and 48 weighed the least (39 grams) at time 0.
+
+```{r fig.width=10}
+complete %>%filter(Chick == 3 | Chick == 11 | Chick == 19 | Chick == 23)  %>% ggplot(aes(x=Time,y=weight)) + geom_point() + facet_grid(cols = vars(Chick))
+```
+
+```{r fig.width=10}
+complete %>%filter(Chick == 27 | Chick == 28 | Chick == 29 | Chick == 33 | Chick == 36 | Chick == 48)  %>% ggplot(aes(x=Time,y=weight)) + geom_point() + facet_grid(cols = vars(Chick))
+```
+
+The four chicks that started at the least weight all ended up roughly in the 150-200 gram range, whereas five of the six chicks that started at the greatest weight ended up weighing close to or more than 200 grams. The remaining chick of the six had some sort of growth stunt around 150 grams.
 
 **7) Add to the previous plot the average growth trajectory for all chicks (calculated as the mean weight for each chick at each time). How do the trajectories compare?**
 ```{r}
