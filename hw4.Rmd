@@ -65,21 +65,26 @@ complete %>% filter(Time == 0 & (init_weight==min | init_weight == max))
 From this we see that Chicks 3, 11, 19, and 23 weighed the most (43 grams) at time 0, and Chicks 27, 28, 29, 33, 36, and 48 weighed the least (39 grams) at time 0.
 
 ```{r fig.width=10}
-complete %>%filter(Chick == 3 | Chick == 11 | Chick == 19 | Chick == 23)  %>% ggplot(aes(x=Time,y=weight)) + geom_point() + facet_grid(cols = vars(Chick))
+complete %>%filter(Chick == 3 | Chick == 11 | Chick == 19 | Chick == 23)  %>% ggplot(aes(x=Time,y=weight)) + geom_point() + facet_grid(cols = vars(Chick)) + labs(title='Growth Trajectories for Chicks with Greatest Starting Weight')
 ```
 
 ```{r fig.width=10}
-complete %>%filter(Chick == 27 | Chick == 28 | Chick == 29 | Chick == 33 | Chick == 36 | Chick == 48)  %>% ggplot(aes(x=Time,y=weight)) + geom_point() + facet_grid(cols = vars(Chick))
+complete %>%filter(Chick == 27 | Chick == 28 | Chick == 29 | Chick == 33 | Chick == 36 | Chick == 48)  %>% ggplot(aes(x=Time,y=weight)) + geom_point() + facet_grid(cols = vars(Chick)) + labs(title='Growth Trajectories for Chicks with Lowest Starting Weight')
 ```
 
-The four chicks that started at the least weight all ended up roughly in the 150-200 gram range, whereas five of the six chicks that started at the greatest weight ended up weighing close to or more than 200 grams. The remaining chick of the six had some sort of growth stunt around 150 grams.
+The chicks at the lowest starting weight tended to gain more weight overall than the chicks that started at the greatest starting weight. The four chicks that started at the greatest weight all ended up roughly in the 150-200 gram range, whereas five of the six chicks that started at the lowest weight ended up weighing roughly 200 grams or more. The remaining chick of the six had some sort of growth stunt around 150 grams.
 
 **7) Add to the previous plot the average growth trajectory for all chicks (calculated as the mean weight for each chick at each time). How do the trajectories compare?**
 ```{r}
-
+wts <- complete %>% group_by(Time) %>% summarize(avg_wt = mean(weight))
+wts %>% ggplot(aes(x=Time,y=avg_wt)) + geom_point() + labs(y='Average Chick Weight (grams)', x='Time (Days)',title='Average Growth Trajectory for All Chicks')
 ```
+
+The average trajectory for all chicks is nondecreasing, which can't be said of the individual trajectories. The average final weight of the chicks is a bit less than 250 grams, which falls more in the range of final weights for chicks that had lower initial weights. The average trajectory has a fairly constant slope, whereas the slopes of individual chicks tend to vary in slope over time. Some of these are seen above in the previous question where they dip off or start to bounce around.
 
 **8) What else do you find interesting in the dataset? Show your exploratory analysis.**
 ```{r}
-
+complete %>% group_by(Diet, Time) %>% summarize(avg_wt = mean(weight)) %>% ggplot(aes(x=Time,y=avg_wt)) + geom_point() + facet_grid(cols = vars(Diet)) + labs(x='Time (Days)',y='Average Weight (grams)',title='Average Weight Trajectories by Diet')
 ```
+
+All four groups of chicks had a similar starting average weight. Consistent with the earlier boxplot comparisons, Diet 3 has the greatest weight gain over the 21 day period, followed by Diets 4, 2, and 1. For all of the diets, the rate of weight gain begins at a similar rate. It isn't until around day 8 that the diets begin to separate. Diet 4 shows a greater average weight gain than diet 3 around that time but does not maintain that rate like diet 3 does.
